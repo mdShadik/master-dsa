@@ -2297,7 +2297,7 @@
   {
     "id": "164",
     "question": "String Compression",
-    "pattern": "Two Pointers",
+    "pattern": "Fast & Slow Pointers",
     "topic": "Strings",
     "level": "medium",
     "leetcode_link": "https://leetcode.com/problems/string-compression/",

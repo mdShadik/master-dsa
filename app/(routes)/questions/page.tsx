@@ -41,6 +41,17 @@ const TOPICS = [
 const PATTERNS = [
   "Two Pointers",
   "Sliding Window",
+  "Fast & Slow Pointers",
+  "Merge Intervals",
+  "Tree Traversal",
+  "Binary Search Tree",
+  "Graph Traversal",
+  "Modified Binary Search",
+  "Sorting Algorithms",
+  "Backtracking",
+  "Greedy Algorithms",
+  "Bit Manipulation",
+  "Union Find",
   "Kadane's Algorithm",
   "Reversal",
   "BFS",
@@ -95,13 +106,6 @@ function LoadingSpinner() {
 
 // Main component that uses useSearchParams
 function QuestionsContent() {
-  const [filters, setFilters] = useState<FilterState>({
-    search: "",
-    topics: [],
-    patterns: [],
-    levels: [],
-    companies: [],
-  });
 
   const [currentPage, setCurrentPage] = useState(1);
   const QUESTIONS_PER_PAGE = 10;
@@ -111,6 +115,14 @@ function QuestionsContent() {
   const search = useSearchParams();
   const pattern = search.get('pattern')?.trim() ? formatSlugToTitle(search.get('pattern')!) : null
   console.log({search: pattern})
+
+  const [filters, setFilters] = useState<FilterState>({
+    search: "",
+    topics: [],
+    patterns: pattern ? [pattern] : [],
+    levels: [],
+    companies: [],
+  });
 
   const filteredQuestions = useMemo(() => {
     return questions.filter((question: Question) => {
@@ -248,14 +260,6 @@ function QuestionsContent() {
   useEffect(() => {
     setCurrentPage(1);
   }, [filters]);
-
-  useEffect(() => {
-    console.log(filters)
-    if (pattern) {
-      console.log({first: "Here"})
-      updateFilter('patterns', pattern);
-    }
-  }, [search]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">

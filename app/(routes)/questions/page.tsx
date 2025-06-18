@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, Suspense } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -23,7 +23,7 @@ import {
 } from "@/app/components/ui/card";
 import { Button } from "@/app/components/ui/button";
 import dsa from "@/app/dsa.json";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { formatSlugToTitle } from "@/app/lib/utils";
 
 // Mock data - replace with actual import from dsa.json
@@ -81,7 +81,20 @@ interface FilterState {
   companies: string[];
 }
 
-export default function QuestionsPage() {
+// Loading component for Suspense fallback
+function LoadingSpinner() {
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+      <div className="text-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p className="text-gray-600">Loading questions...</p>
+      </div>
+    </div>
+  );
+}
+
+// Main component that uses useSearchParams
+function QuestionsContent() {
   const [filters, setFilters] = useState<FilterState>({
     search: "",
     topics: [],
@@ -98,7 +111,6 @@ export default function QuestionsPage() {
   const search = useSearchParams();
   const pattern = search.get('pattern')?.trim() ? formatSlugToTitle(search.get('pattern')!) : null
   console.log({search: pattern})
-
 
   const filteredQuestions = useMemo(() => {
     return questions.filter((question: Question) => {
@@ -247,7 +259,6 @@ export default function QuestionsPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="text-center mb-8">
@@ -538,5 +549,14 @@ export default function QuestionsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+// Main export wrapped in Suspense
+export default function QuestionsPage() {
+  return (
+    <Suspense fallback={<LoadingSpinner />}>
+      <QuestionsContent />
+    </Suspense>
   );
 }
